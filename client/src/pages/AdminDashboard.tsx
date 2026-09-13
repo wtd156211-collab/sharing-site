@@ -90,8 +90,8 @@ export default function AdminDashboard() {
       <section className="dashboard-grid dashboard-grid--main">
         <article className="panel notes-panel">
           <div className="panel__header"><SectionTitle icon={StickyNote} label="最近笔记" meta={`${notes.length} 条刚刚更新`} /><button className="icon-button"><MoreHorizontal size={18} /></button></div>
-          <div className="notes-list">
-            {notes.map((note) => <div className="note-row" key={note.id}><div className={`note-row__marker ${note.type === "image" ? "note-row__marker--image" : ""}`}>{note.type === "image" ? <Camera size={16} /> : <StickyNote size={16} />}</div><div className="note-row__copy"><div className="note-row__meta"><span>{note.time}</span><span className="dot-separator" /> <span>{note.type === "image" ? "图片笔记" : "文字笔记"}</span></div><h3>{note.title}</h3><p>{note.body}</p><div className="note-row__bottom"><span><MessageCircle size={14} /> {note.comments} 条对话</span><button className="text-link">打开笔记 <ArrowUpRight size={13} /></button></div></div></div>)}
+           <div className="notes-list">
+             {notes.length === 0 ? <div className="dashboard-empty"><StickyNote size={22} /><strong>还没有家庭笔记</strong><span>写下第一条内容，家人就能在这里看到。</span><button className="button button--secondary" onClick={() => { setComposerType("text"); setComposerOpen(true); }}>新建笔记</button></div> : notes.map((note) => <div className="note-row" key={note.id}><div className={`note-row__marker ${note.type === "image" ? "note-row__marker--image" : ""}`}>{note.type === "image" ? <Camera size={16} /> : <StickyNote size={16} />}</div><div className="note-row__copy"><div className="note-row__meta"><span>{note.time}</span><span className="dot-separator" /> <span>{note.type === "image" ? "图片笔记" : "文字笔记"}</span></div><h3>{note.title}</h3><p>{note.body}</p><div className="note-row__bottom"><span><MessageCircle size={14} /> {note.comments} 条对话</span><button className="text-link">打开笔记 <ArrowUpRight size={13} /></button></div></div></div>)}
           </div>
           <Link href="/share/demo" className="panel__footer-link">查看全部笔记 <ArrowUpRight size={14} /></Link>
         </article>
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
       </section>
 
       {composerOpen && <div className="modal-backdrop" role="presentation"><div className="composer-modal" role="dialog" aria-modal="true" aria-labelledby="composer-title"><div className="composer-modal__header"><div><p className="eyebrow">新内容</p><h2 id="composer-title">{composerType === "text" ? "写一条家庭笔记" : "添加一张图片"}</h2></div><button className="icon-button" onClick={() => setComposerOpen(false)} aria-label="关闭"><X size={18} /></button></div><div className="composer-tabs"><button className={composerType === "text" ? "is-active" : ""} onClick={() => setComposerType("text")}><StickyNote size={15} />文字笔记</button><button className={composerType === "image" ? "is-active" : ""} onClick={() => setComposerType("image")}><ImagePlus size={15} />图片</button></div>{composerType === "text" ? <textarea autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="今天想和家人分享什么？" className="note-textarea" /> : <ImageUploader />}<div className="composer-modal__footer"><span><Check size={14} />自动保存草稿</span><div><button className="button button--ghost" onClick={() => setComposerOpen(false)}>取消</button><button className="button button--primary" onClick={publish}><Send size={15} />发布内容</button></div></div></div></div>}
-      {toast && <div className="toast"><Check size={16} />{toast}</div>}
+       {toast && <div className="toast" role="status" aria-live="polite"><Check size={16} />{toast}</div>}
     </AdminFrame>
   );
 }

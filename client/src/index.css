@@ -168,6 +168,11 @@ h1 { margin-bottom: 0; color: var(--ink-1); font-size: clamp(28px, 3vw, 38px); l
 .text-link:hover { color: var(--orange); }
 .share-panel__footer .text-link { margin-left: auto; }
 .notes-panel, .activity-panel { min-height: 335px; }
+.dashboard-empty { display: grid; justify-items: center; gap: 8px; padding: 46px 24px; color: var(--ink-3); text-align: center; }
+.dashboard-empty svg { color: var(--primary); }
+.dashboard-empty strong { color: var(--ink-1); font-size: 14px; }
+.dashboard-empty span { max-width: 280px; font-size: 12px; line-height: 1.5; }
+.dashboard-empty .button { margin-top: 6px; }
 .notes-list { display: grid; gap: 0; margin: 20px -25px 0; }
 .note-row { display: flex; gap: 14px; padding: 18px 25px; border-top: 1px solid #f0efea; transition: .18s var(--ease-out); }
 .note-row:hover { background: #fffdf9; }
