@@ -1,0 +1,14 @@
+[
+  {
+    "date": "2026-09-14",
+    "register": "product",
+    "palette": "cool-slate+cobalt",
+    "type": "Roboto-system",
+    "layout": "sidebar+appbar",
+    "motion": "feedback-only",
+    "material": "material-surfaces",
+    "soul": 5,
+    "spectacle": 2,
+    "density": 7
+  }
+]

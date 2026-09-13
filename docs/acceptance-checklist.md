@@ -3,11 +3,19 @@
 ## 本地自动化证据
 
 - [x] `corepack pnpm install --frozen-lockfile`
-- [x] `corepack pnpm test`（当前 31 个测试通过）
+- [x] `corepack pnpm test`（当前 39 个测试通过，包含 Material 3 响应式契约）
 - [x] `corepack pnpm check`
 - [x] `corepack pnpm build`
 - [x] `docker compose config`（使用临时环境变量，未写入 `.env`）
 - [ ] `docker compose build` 与容器 `/health`（等待 Docker Desktop Linux daemon 启动）
+
+## Material 3 界面改版验收
+
+- [x] 冷灰底色、Cobalt 主色、Roboto/Roboto Mono 字体 token 已统一落地
+- [x] 管理端侧栏 + 顶栏、公开分享页、设置页、时间线和 AI 助手已统一为 Material surface/card 体系
+- [x] 桌面侧栏保持固定，窄屏折叠为移动顶栏；概览区和主要栅格在 760px 以下收为单列
+- [x] 键盘 `:focus-visible`、跳转主内容、`aria-live` 状态反馈、44px 触控目标和 `prefers-reduced-motion` 已加入
+- [x] `server/routes/health.test.ts` 健康路由契约测试通过；未宣称真实容器健康检查完成
 
 ## 功能验收（需要本地 MySQL 与 Manus OAuth 配置）
 
