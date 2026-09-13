@@ -1,33 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
 :root {
-  --ink: #172d3d;
-  --ink-soft: #456072;
-  --paper: #f7f6f1;
-  --paper-deep: #eeeae1;
-  --white: #ffffff;
-  --line: #e6e4dd;
-  --muted: #89959a;
-  --orange: #f27b4b;
-  --orange-deep: #d85f35;
-  --peach: #ffe3d4;
-  --blue-wash: #e6f0f5;
-  --green-wash: #e4f0e8;
-  --yellow: #f5cf62;
-  --shadow: 0 18px 48px rgba(23, 45, 61, .07);
-  --radius: 18px;
-  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --page: #ECEFF3;
+  --surface: #FBFCFE;
+  --surface-2: #F3F6FA;
+  --surface-3: #E7EDF5;
+  --border: rgba(35, 39, 47, .12);
+  --ink-1: #23272F;
+  --ink-2: #454E5E;
+  --ink-3: #6F7C91;
+  --primary: #2D5BD8;
+  --primary-soft: rgba(45, 91, 216, .11);
+  --on-primary: #FBFCFE;
+  --success: #2F7A55;
+  --danger: #B8443F;
+  --warning: #B77A16;
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --shadow-card: 0 1px 3px rgba(35, 39, 47, .06);
+  --shadow-floating: 0 24px 56px rgba(35, 39, 47, .16);
+
+  /* Compatibility aliases for page-specific styles migrated in later tasks. */
+  --ink: var(--ink-1);
+  --ink-soft: var(--ink-2);
+  --paper: var(--page);
+  --paper-deep: var(--surface-2);
+  --white: var(--surface);
+  --line: var(--border);
+  --muted: var(--ink-3);
+  --orange: var(--primary);
+  --orange-deep: #2249B3;
+  --peach: var(--primary-soft);
+  --blue-wash: var(--surface-3);
+  --green-wash: rgba(47, 122, 85, .12);
+  --yellow: var(--warning);
+  --shadow: var(--shadow-card);
+  --radius: var(--radius-card);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
 
 * { box-sizing: border-box; }
-html { background: var(--paper); }
-body { margin: 0; color: var(--ink); background: var(--paper); font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+html { background: var(--page); overflow-x: clip; }
+body { margin: 0; color: var(--ink-1); background: var(--page); font-family: "Roboto", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: clip; }
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
-::selection { background: #ffd9c6; color: var(--ink); }
+::selection { background: var(--primary-soft); color: var(--ink-1); }
 
 .app-frame { min-height: 100vh; display: flex; background: var(--paper); }
 .side-rail { position: sticky; top: 0; align-self: flex-start; width: 236px; height: 100dvh; flex: 0 0 236px; overflow-y: auto; display: flex; flex-direction: column; padding: 26px 16px 18px; background: #f0efe9; border-right: 1px solid #e6e4dc; }
