@@ -3,6 +3,9 @@
 // Downloads return /manus-storage/{key} paths served via 307 redirect.
 
 import { ENV } from "./_core/env";
+import { createLocalStorage } from "./storage/local";
+import { createS3Storage } from "./storage/s3";
+import type { StorageAdapter } from "./storage/types";
 
 function getForgeConfig() {
   const forgeUrl = ENV.forgeApiUrl;
@@ -94,4 +97,17 @@ export async function storageGetSignedUrl(relKey: string): Promise<string> {
 
   const { url } = (await resp.json()) as { url: string };
   return url;
+}
+
+export function getStorageAdapter(): StorageAdapter {
+  if (ENV.storageDriver === "s3") {
+    return createS3Storage({
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION ?? "auto",
+      bucket: process.env.S3_BUCKET ?? "",
+      accessKeyId: process.env.S3_ACCESS_KEY ?? "",
+      secretAccessKey: process.env.S3_SECRET_KEY ?? "",
+    });
+  }
+  return createLocalStorage(ENV.uploadDir);
 }
