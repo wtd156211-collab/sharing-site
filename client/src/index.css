@@ -200,6 +200,16 @@ h1 { margin-bottom: 0; font-family: Fraunces, Georgia, serif; font-size: clamp(3
 
 /* Share page */
 .share-page { min-height: 100vh; color: var(--ink); background: #fbfaf6; }
+.share-page--access { display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 20%, #fff8ec 0, #fbfaf6 48%); }
+.share-access-card { width: min(100%, 390px); padding: 34px 32px; background: #fff; border: 1px solid #ece8df; border-radius: 18px; box-shadow: 0 22px 60px rgba(43, 59, 64, .08); text-align: center; }
+.share-access-card__icon { width: 46px; height: 46px; display: grid; place-items: center; margin: 0 auto 18px; color: #a77739; background: #fff2d8; border-radius: 14px; }
+.share-access-card h1 { margin: 8px 0 10px; font-size: 25px; letter-spacing: -.03em; }
+.share-access-card > p:not(.eyebrow) { margin: 0 0 23px; color: #849092; font-size: 11px; line-height: 1.7; }
+.share-access-card form { display: grid; gap: 9px; text-align: left; }
+.share-access-card label { color: #6f7d80; font-size: 10px; font-weight: 700; }
+.share-access-card input { height: 40px; padding: 0 12px; color: var(--ink); background: #fcfcf9; border: 1px solid #e4e2da; border-radius: 9px; outline: 0; font-size: 12px; }
+.share-access-card input:focus { border-color: #9fb9bd; box-shadow: 0 0 0 3px rgba(159, 185, 189, .18); }
+.form-error { margin: 2px 0 0; color: #bd6659; font-size: 10px; }
 .share-header { position: sticky; z-index: 5; top: 0; background: rgba(251,250,246,.92); border-bottom: 1px solid #eeece5; backdrop-filter: blur(14px); }
 .share-header__inner, .share-footer__inner { width: min(100% - 48px, 1000px); display: flex; align-items: center; justify-content: space-between; margin: auto; }
 .share-header__inner { height: 69px; }

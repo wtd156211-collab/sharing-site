@@ -18,6 +18,8 @@ export type AdminSpace = {
   updatedAt: string;
 };
 
+export type ShareSpace = Pick<AdminSpace, "id" | "name" | "description" | "allowComments" | "status" | "expiresAt" | "lastActivityAt" | "createdAt" | "updatedAt">;
+
 type CreateSpaceInput = {
   name: string;
   description?: string | null;
@@ -55,5 +57,10 @@ export const api = {
     updateSpace: (id: number, input: UpdateSpaceInput) => request<{ space: AdminSpace }>(`/api/admin/spaces/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
     resetShareLink: (id: number) => request<{ shareUrl: string }>(`/api/admin/spaces/${id}/reset-link`, { method: "POST" }),
     archiveSpace: (id: number) => request<{ ok: true }>(`/api/admin/spaces/${id}`, { method: "DELETE" }),
+  },
+  share: {
+    getSpace: (token: string) => request<{ space: ShareSpace }>(`/api/share/${encodeURIComponent(token)}`),
+    unlock: (token: string, password: string) => request<{ space: ShareSpace }>(`/api/share/${encodeURIComponent(token)}/unlock`, { method: "POST", body: JSON.stringify({ password }) }),
+    listEntries: (token: string) => request<{ entries: Array<Record<string, unknown>> }>(`/api/share/${encodeURIComponent(token)}/entries`),
   },
 };

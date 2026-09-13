@@ -143,10 +143,10 @@ git push -u origin main
 **Interfaces:**
 - Produces: `GET /api/share/:token`、`GET /api/share/:token/entries`；密码验证后的短期 HttpOnly 会话；失效、暂停、归档、错误令牌的明确 404/410/401 行为。
 
-- [ ] **Step 1: 写访问矩阵测试**：有效令牌可读；错误/重置前令牌不可读；暂停或过期空间不可读；开启密码时未验证只能得到密码提示；验证会话不能访问其他空间。
-- [ ] **Step 2: 实现令牌哈希比对和可选密码哈希校验**：Cookie 使用 `HttpOnly`、生产 `Secure`、合适 `SameSite` 和有限时长；分享页设置 `X-Robots-Tag: noindex`。
-- [ ] **Step 3: 将 `ShareSpace` 改为先加载空间元数据和分页内容；密码状态进入 `ShareAccess`，不再把演示 token 写死在组件中**。
-- [ ] **Step 4: 运行访问测试和构建，提交并推送**：`feat: add protected share access flow`。
+- [x] **Step 1: 写访问矩阵测试**：有效令牌可读；错误/重置前令牌不可读；暂停或过期空间不可读；开启密码时未验证只能得到密码提示；验证会话不能访问其他空间。
+- [x] **Step 2: 实现令牌哈希比对和可选密码哈希校验**：Cookie 使用 `HttpOnly`、生产 `Secure`、`SameSite=Lax` 和 12 小时有效期；分享页设置 `X-Robots-Tag: noindex`。
+- [x] **Step 3: 将 `ShareSpace` 改为按 URL token 加载空间元数据；密码状态进入 `ShareAccess`，不再在组件内写死分享 token**（完整时间线分页在 Task 5 接入）。
+- [x] **Step 4: 运行访问测试和构建，提交并推送**：`feat: add protected share access flow`。
 
 ### Task 5: 文字、图片、评论和对话时间线
 

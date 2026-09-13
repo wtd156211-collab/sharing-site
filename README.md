@@ -31,6 +31,8 @@ corepack pnpm dev
 
 原始分享令牌只在创建或重置响应中返回一次，MySQL 仅保存 SHA-256 哈希。
 
+分享端接口为 `GET /api/share/:token`、`POST /api/share/:token/unlock` 和 `GET /api/share/:token/entries`。开启密码的空间使用 12 小时 HttpOnly 会话；分享响应带有 `X-Robots-Tag: noindex` 和私有缓存策略。
+
 ## 数据库
 
 生产和测试环境使用 MySQL。数据库迁移命令为：
