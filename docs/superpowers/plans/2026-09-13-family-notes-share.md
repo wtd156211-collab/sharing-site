@@ -123,11 +123,11 @@ git push -u origin main
 **Interfaces:**
 - Produces: `POST /api/admin/login`、`GET /api/admin/spaces`、`POST /api/admin/spaces`、`PATCH /api/admin/spaces/:id`、`POST /api/admin/spaces/:id/reset-link`、`DELETE /api/admin/spaces/:id`；前端 `api.admin.*` typed helpers。
 
-- [ ] **Step 1: 根据阶段 0 决策实现管理登录**：默认复用现有 Manus OAuth 会话并要求 `user.role in {owner, admin}`；只有确认需要独立账号时才增加 bcrypt/Argon2id 密码登录。
-- [ ] **Step 2: 为所有管理路由写未登录、非管理员、跨 owner 访问失败测试**，断言 401/403 且响应不含会话、令牌或密码哈希。
-- [ ] **Step 3: 实现空间 CRUD 和令牌重置**：令牌使用 `crypto.randomBytes(32)` + Base64URL，数据库存 SHA-256 哈希；创建/重置只在管理响应中返回一次原始链接。
-- [ ] **Step 4: 将 `AdminDashboard` 的演示状态替换为查询、创建笔记入口和空间统计；保留现有视觉结构**。
-- [ ] **Step 5: 运行相关 Vitest、`pnpm check`、`pnpm build`，提交并推送**：`feat: add admin authentication and space management`。
+- [x] **Step 1: 根据阶段 0 决策实现管理登录**：复用现有 Manus OAuth 会话并要求 `user.role=admin`；独立密码登录留到后续确有需要时再评估。
+- [x] **Step 2: 为管理路由写未登录、非管理员、跨 owner 访问失败测试**，断言 401/403 且响应不含会话、令牌或密码哈希。
+- [x] **Step 3: 实现空间 CRUD 和令牌重置**：令牌使用 `crypto.randomBytes(32)` + Base64URL，数据库存 SHA-256 哈希；创建/重置只在管理响应中返回一次原始链接。
+- [ ] **Step 4: 将 `AdminDashboard` 的演示状态替换为查询、创建笔记入口和空间统计；保留现有视觉结构**（内容发布入口随 Task 5 接入）。
+- [x] **Step 5: 运行相关 Vitest、`pnpm check`、`pnpm build`，提交并推送**：`feat: add admin authentication and space management`。
 
 ### Task 4: 分享访问、密码和失效策略
 

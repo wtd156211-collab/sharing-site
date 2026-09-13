@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "../db";
 import { spaces, type InsertSpace, type Space } from "../../drizzle/schema";
 
@@ -36,8 +36,31 @@ export async function findSpaceById(id: number) {
   return rows[0] ? toPublicSpace(rows[0]) : null;
 }
 
+export async function findSpaceByIdAndOwner(id: number, ownerId: number) {
+  const db = await requireDb();
+  const rows = await db
+    .select()
+    .from(spaces)
+    .where(and(eq(spaces.id, id), eq(spaces.ownerId, ownerId)))
+    .limit(1);
+  return rows[0] ? toPublicSpace(rows[0]) : null;
+}
+
 export async function insertSpace(values: InsertSpace) {
   const db = await requireDb();
   const result = await db.insert(spaces).values(values);
   return Number(result[0].insertId);
+}
+
+export async function updateSpaceByOwner(
+  id: number,
+  ownerId: number,
+  values: Partial<Pick<InsertSpace, "name" | "description" | "allowComments" | "status" | "expiresAt" | "shareTokenHash" | "passwordHash">>,
+) {
+  const db = await requireDb();
+  const result = await db
+    .update(spaces)
+    .set(values)
+    .where(and(eq(spaces.id, id), eq(spaces.ownerId, ownerId)));
+  return result[0].affectedRows > 0;
 }

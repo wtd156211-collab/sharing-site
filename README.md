@@ -20,6 +20,17 @@ corepack pnpm dev
 
 复制 `.env.example` 为 `.env` 后再启动服务。没有配置 `DATABASE_URL` 时，开发环境可以启动页面和基础路由，但业务数据接口需要 MySQL。
 
+当前管理接口复用 Manus OAuth 会话，并要求数据库用户 `role=admin`：
+
+- `POST /api/admin/login` 返回当前管理员的公开资料
+- `GET /api/admin/spaces` 列出当前管理员拥有的空间
+- `POST /api/admin/spaces` 创建空间并返回一次性分享链接
+- `PATCH /api/admin/spaces/:id` 更新空间设置
+- `POST /api/admin/spaces/:id/reset-link` 轮换分享令牌
+- `DELETE /api/admin/spaces/:id` 将空间归档
+
+原始分享令牌只在创建或重置响应中返回一次，MySQL 仅保存 SHA-256 哈希。
+
 ## 数据库
 
 生产和测试环境使用 MySQL。数据库迁移命令为：
