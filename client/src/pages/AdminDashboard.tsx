@@ -56,10 +56,17 @@ export default function AdminDashboard() {
 
   return (
     <AdminFrame eyebrow="星期日，9 月 13 日" title="早上好，小满" action={<Link href="/share/demo" className="button button--secondary"><Share2 size={16} />查看分享页<ArrowUpRight size={15} /></Link>}>
-      <section className="welcome-strip">
-        <div className="welcome-strip__copy"><span className="welcome-strip__mark">今日小记</span><h2>把想说的话，留在这里。</h2><p>这是你和家人一起记录生活的第 18 天。</p></div>
-        <div className="welcome-strip__stats"><div><strong>24</strong><span>条笔记</span></div><div><strong>6</strong><span>张图片</span></div><div><strong>12</strong><span>条对话</span></div></div>
-        <div className="welcome-strip__sun" aria-hidden="true"><span /></div>
+      <section className="overview-strip" aria-labelledby="overview-title">
+        <div className="overview-strip__copy">
+          <p className="section-kicker">今日概览</p>
+          <h2 id="overview-title">把想说的话，留在这里。</h2>
+          <p>记录一段文字或一张图片，家人会在分享空间里看到。</p>
+        </div>
+        <div className="overview-strip__status">
+          <LivePill text="空间正常" />
+          <span>最近更新：等待数据</span>
+          <button className="button button--primary" onClick={() => { setComposerType("text"); setComposerOpen(true); }}><FilePlus2 size={16} />新建笔记</button>
+        </div>
       </section>
 
       <section className="dashboard-grid dashboard-grid--top">
