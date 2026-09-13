@@ -86,12 +86,13 @@ export function MobileHeader() {
 export function AdminFrame({ children, eyebrow, title, action }: { children: ReactNode; eyebrow: string; title: string; action?: ReactNode }) {
   return (
     <div className="app-frame">
+      <a className="skip-link" href="#main-content">跳转到主要内容</a>
       <SideRail />
       <MobileHeader />
-      <main className="app-main">
-        <header className="page-header">
+      <main id="main-content" className="app-main">
+        <header className="app-topbar">
           <div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div>
-          {action && <div className="page-header__actions">{action}</div>}
+          {action && <div className="app-topbar__actions">{action}</div>}
         </header>
         {children}
       </main>

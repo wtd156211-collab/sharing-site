@@ -14,5 +14,7 @@ describe("desktop side rail layout", () => {
     expect(sideRailRule).toContain("position: sticky");
     expect(sideRailRule).toContain("top: 0");
     expect(sideRailRule).toMatch(/height:\s*100dvh/);
+    expect(stylesheet).toContain(".app-topbar");
+    expect(stylesheet).toContain(".skip-link");
   });
 });
