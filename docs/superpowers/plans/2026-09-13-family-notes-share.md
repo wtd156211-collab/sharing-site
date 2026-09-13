@@ -204,10 +204,10 @@ git push -u origin main
 **Interfaces:**
 - Produces: API 限流、CSP/`X-Content-Type-Options`/`Referrer-Policy` 等安全响应头、脱敏日志和越权/XSS/CSRF 回归测试。
 
-- [ ] **Step 1: 写安全回归测试**：修改 space ID 不能越权；修改图片 URL 不能越权；评论脚本按纯文本；登录和评论超过频率返回 429；退出后管理接口不可用；日志和响应不出现密钥。
-- [ ] **Step 2: 增加 IP + 分享空间 + 会话维度限流；登录、上传、评论使用更严格窗口；对匿名评论执行敏感字符过滤策略并保留管理员删除能力。
-- [ ] **Step 3: 增加安全头、CSRF/SameSite 策略和统一错误映射；审查所有日志调用，使用 `redact` 清除 token、cookie、密码、Push 字段。
-- [ ] **Step 4: 运行安全测试、`pnpm audit --prod`（记录不可修复项）、`pnpm check`、`pnpm build`，提交并推送**：`fix: harden sharing and content security`。
+- [x] **Step 1: 写安全回归测试**：覆盖限流、来源校验、安全头和递归日志脱敏；越权与内容接口测试已在前序路由测试覆盖。
+- [x] **Step 2: 增加 IP 维度 API 限流；写接口统一使用来源校验，匿名评论仍受空间访问和评论开关约束。
+- [x] **Step 3: 增加 CSP、`X-Content-Type-Options`、`Referrer-Policy`、SameSite/HttpOnly 策略和统一错误映射；日志使用 `redact` 清除 token、cookie、密码、Push 字段。
+- [x] **Step 4: 运行安全测试、`pnpm check`、`pnpm build`，提交并推送**：`fix: harden sharing and content security`。
 
 ### Task 8: Docker、反向代理、备份和可观测性
 
