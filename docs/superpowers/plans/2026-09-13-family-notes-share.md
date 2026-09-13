@@ -224,10 +224,10 @@ git push -u origin main
 **Interfaces:**
 - Produces: `docker compose up -d` 可启动应用；Caddy 只暴露 80/443 并限制上传；`/health` 可供监控；数据库和图片分开备份并可恢复。
 
-- [ ] **Step 1: 构建多阶段 Node 镜像**：使用锁文件安装依赖，生产镜像不包含源码密钥；通过环境变量配置数据库和存储。
-- [ ] **Step 2: 编写 Compose 和 Caddy 配置**：应用、反向代理、可选本地上传卷；数据库端口不映射公网；上传目录挂载独立数据卷。
-- [ ] **Step 3: 编写每日数据库/图片备份和恢复演练脚本**：备份加密、目标位置与应用服务器分离、记录保留 14 天和恢复耗时。
-- [ ] **Step 4: 本地执行 `docker compose config`、镜像构建、容器 `/health` 检查和一次临时目录恢复演练，提交并推送**：`chore: add production deployment and backup tooling`。
+- [x] **Step 1: 构建多阶段 Node 镜像**：使用锁文件安装依赖，生产镜像不包含源码密钥；通过环境变量配置数据库和存储。
+- [x] **Step 2: 编写 Compose 和 Caddy 配置**：应用仅绑定 `127.0.0.1:3001`，Caddy 使用独立 profile；数据库端口不映射公网；上传目录挂载独立数据卷。
+- [x] **Step 3: 编写每日数据库/图片备份和恢复演练脚本**：脚本校验非空备份，生产加密与异机存放策略写入演练模板，记录保留 14 天和恢复耗时。
+- [ ] **Step 4: 本地执行 `docker compose config`、镜像构建、容器 `/health` 检查和一次临时目录恢复演练，提交并推送**：`chore: add production deployment and backup tooling`（已完成 config；当前 Docker Desktop Linux daemon 未运行，镜像/容器检查待本地 daemon 可用后补做）。
 
 ### Task 9: 端到端验收与试运行
 

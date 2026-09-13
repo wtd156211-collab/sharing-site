@@ -47,6 +47,8 @@ corepack pnpm db:push
 
 部署配置会在后续阶段加入 `Dockerfile`、`docker-compose.yml` 和反向代理配置。生产环境只应对外开放 80/443，MySQL 和上传目录使用独立的受保护存储。
 
+本地 Compose 需要先在未提交的 `.env` 中设置 `MYSQL_PASSWORD` 和 `MYSQL_ROOT_PASSWORD`，然后执行 `docker compose config` 检查配置，使用 `docker compose up -d db` 启动隔离 MySQL。应用只绑定到 `127.0.0.1:3001`；Caddy 使用 `--profile proxy` 启动，默认映射到本机 8080/8443，避免占用现有端口。
+
 ## Git 约定
 
 每个开发任务完成后先运行任务对应的测试、类型检查和构建，再使用 Conventional Commits 提交并推送到 `origin/main`。`.env*`、`node_modules`、构建产物和运行日志禁止提交。
