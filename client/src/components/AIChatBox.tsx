@@ -190,30 +190,39 @@ export function AIChatBox({
   return (
     <div
       ref={containerRef}
+      role="region"
+      aria-label="家庭 AI 助手"
       className={cn(
-        "flex flex-col bg-card text-card-foreground rounded-lg border shadow-sm",
+        "ai-chatbox flex flex-col bg-card text-card-foreground rounded-lg border shadow-sm",
         className
       )}
       style={{ height }}
     >
+      <header className="ai-chatbox__header">
+        <div>
+          <strong>家庭 AI 助手</strong>
+          <span>根据当前空间内容提供帮助</span>
+        </div>
+        <span className="ai-chatbox__status"><span aria-hidden="true" />可用</span>
+      </header>
       {/* Messages Area */}
       <div ref={scrollAreaRef} className="flex-1 overflow-hidden">
         {displayMessages.length === 0 ? (
-          <div className="flex h-full flex-col p-4">
+          <div className="ai-chatbox__empty flex h-full flex-col p-4">
             <div className="flex flex-1 flex-col items-center justify-center gap-6 text-muted-foreground">
               <div className="flex flex-col items-center gap-3">
-                <Sparkles className="size-12 opacity-20" />
+                <span className="ai-chatbox__empty-icon"><Sparkles className="size-6" /></span>
                 <p className="text-sm">{emptyStateMessage}</p>
               </div>
 
               {suggestedPrompts && suggestedPrompts.length > 0 && (
-                <div className="flex max-w-2xl flex-wrap justify-center gap-2">
+                <div className="ai-chatbox__suggestions flex max-w-2xl flex-wrap justify-center gap-2">
                   {suggestedPrompts.map((prompt, index) => (
                     <button
                       key={index}
                       onClick={() => onSendMessage(prompt)}
                       disabled={isLoading}
-                      className="rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                      className="ai-chatbox__suggestion rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {prompt}
                     </button>
@@ -223,7 +232,7 @@ export function AIChatBox({
             </div>
           </div>
         ) : (
-          <ScrollArea className="h-full">
+          <ScrollArea className="ai-chatbox__scroll h-full">
             <div className="flex flex-col space-y-4 p-4">
               {displayMessages.map((message, index) => {
                 // Apply min-height to last message only if NOT loading (when loading, the loading indicator gets it)
@@ -235,7 +244,7 @@ export function AIChatBox({
                   <div
                     key={index}
                     className={cn(
-                      "flex gap-3",
+                      "ai-chatbox__message flex gap-3",
                       message.role === "user"
                         ? "justify-end items-start"
                         : "justify-start items-start"
@@ -256,8 +265,8 @@ export function AIChatBox({
                       className={cn(
                         "max-w-[80%] rounded-lg px-4 py-2.5",
                         message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground"
+                          ? "ai-chatbox__message-bubble ai-chatbox__message-bubble--user bg-primary text-primary-foreground"
+                          : "ai-chatbox__message-bubble ai-chatbox__message-bubble--assistant bg-muted text-foreground"
                       )}
                     >
                       {message.role === "assistant" ? (
@@ -306,7 +315,7 @@ export function AIChatBox({
       <form
         ref={inputAreaRef}
         onSubmit={handleSubmit}
-        className="flex gap-2 p-4 border-t bg-background/50 items-end"
+        className="ai-chatbox__composer flex gap-2 p-4 border-t bg-background/50 items-end"
       >
         <Textarea
           ref={textareaRef}
