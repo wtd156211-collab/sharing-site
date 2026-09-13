@@ -62,5 +62,18 @@ export const api = {
     getSpace: (token: string) => request<{ space: ShareSpace }>(`/api/share/${encodeURIComponent(token)}`),
     unlock: (token: string, password: string) => request<{ space: ShareSpace }>(`/api/share/${encodeURIComponent(token)}/unlock`, { method: "POST", body: JSON.stringify({ password }) }),
     listEntries: (token: string) => request<{ entries: Array<Record<string, unknown>> }>(`/api/share/${encodeURIComponent(token)}/entries`),
+    listComments: (token: string, entryId?: number) => request<{ comments: Array<Record<string, unknown>> }>(`/api/share/${encodeURIComponent(token)}/comments${entryId ? `?entryId=${entryId}` : ""}`),
+    createEntry: (token: string, text: string) => request<{ entry: Record<string, unknown> }>(`/api/share/${encodeURIComponent(token)}/entries`, { method: "POST", body: JSON.stringify({ text }) }),
+    createComment: (token: string, input: { nickname: string; content: string; entryId?: number; replyToCommentId?: number }) => request<{ comment: Record<string, unknown> }>(`/api/share/${encodeURIComponent(token)}/comments`, { method: "POST", body: JSON.stringify(input) }),
+    uploadImage: async (token: string, file: File) => {
+      const response = await fetch(`/api/share/${encodeURIComponent(token)}/images`, { method: "POST", body: file, headers: { "Content-Type": file.type, "X-File-Name": encodeURIComponent(file.name) }, credentials: "include" });
+      const body = await response.json().catch(() => null) as { error?: { code?: string; message?: string } } | null;
+      if (!response.ok) throw new ApiError(response.status, body?.error?.code ?? "UNKNOWN_ERROR", body?.error?.message ?? "Request failed");
+      return body as { entry: Record<string, unknown> };
+    },
+  },
+  adminContent: {
+    deleteEntry: (id: number) => request<{ ok: true }>(`/api/admin/entries/${id}`, { method: "DELETE" }),
+    deleteComment: (id: number) => request<{ ok: true }>(`/api/admin/comments/${id}`, { method: "DELETE" }),
   },
 };

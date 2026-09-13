@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "../db";
-import { comments, type InsertComment } from "../../drizzle/schema";
+import { comments, type Comment, type InsertComment } from "../../drizzle/schema";
 
 function requireDb() {
   return getDb().then(db => {
@@ -20,4 +20,16 @@ export async function insertComment(values: InsertComment) {
   const db = await requireDb();
   const result = await db.insert(comments).values(values);
   return Number(result[0].insertId);
+}
+
+export async function findCommentById(id: number): Promise<Comment | null> {
+  const db = await requireDb();
+  const rows = await db.select().from(comments).where(eq(comments.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function updateCommentStatus(id: number, spaceId: number, status: "hidden" | "deleted") {
+  const db = await requireDb();
+  const result = await db.update(comments).set({ status }).where(and(eq(comments.id, id), eq(comments.spaceId, spaceId)));
+  return result[0].affectedRows > 0;
 }

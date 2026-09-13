@@ -1,6 +1,6 @@
 import { and, desc, eq, lt } from "drizzle-orm";
 import { getDb } from "../db";
-import { entries, type InsertEntry } from "../../drizzle/schema";
+import { entries, type Entry, type InsertEntry } from "../../drizzle/schema";
 
 function requireDb() {
   return getDb().then(db => {
@@ -21,4 +21,16 @@ export async function insertEntry(values: InsertEntry) {
   const db = await requireDb();
   const result = await db.insert(entries).values(values);
   return Number(result[0].insertId);
+}
+
+export async function findEntryById(id: number): Promise<Entry | null> {
+  const db = await requireDb();
+  const rows = await db.select().from(entries).where(eq(entries.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function updateEntryVisibility(id: number, spaceId: number, visibility: "hidden" | "deleted") {
+  const db = await requireDb();
+  const result = await db.update(entries).set({ visibility }).where(and(eq(entries.id, id), eq(entries.spaceId, spaceId)));
+  return result[0].affectedRows > 0;
 }

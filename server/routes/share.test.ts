@@ -58,4 +58,24 @@ describe("share routes", () => {
     expect(listed).toBe(true);
     expect(await response.json()).toEqual({ entries: [{ id: 9, spaceId: 3 }] });
   });
+
+  it("rejects blank text entries before touching persistence", async () => {
+    let inserted = false;
+    const response = await startRequest({
+      findSpaceByTokenHash: async () => ({ id: 3, ownerId: 7, status: "active" as const, expiresAt: null, passwordHash: null, name: "家庭", description: null, allowComments: true, lastActivityAt: null, createdAt: new Date(), updatedAt: new Date() }),
+      authenticateAdmin: async () => ({ id: 7, name: null, email: null, role: "admin" as const }),
+      insertEntry: async () => { inserted = true; return 1; },
+    }, `/api/share/${token}/entries`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: "   " }) });
+    expect(response.status).toBe(400);
+    expect(inserted).toBe(false);
+  });
+
+  it("blocks comments when the space owner disabled them", async () => {
+    const response = await startRequest({
+      findSpaceByTokenHash: async () => ({ id: 3, ownerId: 7, status: "active" as const, expiresAt: null, passwordHash: null, name: "家庭", description: null, allowComments: false, lastActivityAt: null, createdAt: new Date(), updatedAt: new Date() }),
+      insertComment: async () => 1,
+    }, `/api/share/${token}/comments`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nickname: "家人", content: "你好" }) });
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: { code: "REQUEST_FAILED", message: "Comments are disabled" } });
+  });
 });

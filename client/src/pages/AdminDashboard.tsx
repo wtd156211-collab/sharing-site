@@ -12,7 +12,6 @@ import {
   Link2,
   MessageCircle,
   MoreHorizontal,
-  Plus,
   Send,
   Share2,
   StickyNote,
@@ -20,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminFrame, activityItems, LivePill, samplePhotos, SectionTitle, SmallAvatar } from "@/components/NotesShell";
+import ImageUploader from "@/components/ImageUploader";
 
 const initialNotes = [
   { id: 1, type: "text", title: "今天把数学错题重新整理了一遍", body: "发现先画图再列式会清楚很多。晚上想再把第三题讲给妈妈听。", time: "今天 10:18", comments: 3 },
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
         <div className="photo-grid">{samplePhotos.map((photo) => <div className="photo-tile" key={photo.id}><div className={`photo-placeholder ${photo.gradient}`}><span className="photo-placeholder__label">{photo.id === 1 ? "SAT" : photo.id === 2 ? "SUN" : "DINNER"}</span></div><strong>{photo.title}</strong><span>{photo.subtitle}</span></div>)}</div>
       </section>
 
-      {composerOpen && <div className="modal-backdrop" role="presentation"><div className="composer-modal" role="dialog" aria-modal="true" aria-labelledby="composer-title"><div className="composer-modal__header"><div><p className="eyebrow">新内容</p><h2 id="composer-title">{composerType === "text" ? "写一条家庭笔记" : "添加一张图片"}</h2></div><button className="icon-button" onClick={() => setComposerOpen(false)} aria-label="关闭"><X size={18} /></button></div><div className="composer-tabs"><button className={composerType === "text" ? "is-active" : ""} onClick={() => setComposerType("text")}><StickyNote size={15} />文字笔记</button><button className={composerType === "image" ? "is-active" : ""} onClick={() => setComposerType("image")}><ImagePlus size={15} />图片</button></div>{composerType === "text" ? <textarea autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="今天想和家人分享什么？" className="note-textarea" /> : <div className="image-uploader"><div className="image-uploader__icon"><ImagePlus size={28} /></div><strong>拖拽图片到这里</strong><span>或者点击选择文件 · 单张最大 10 MB</span><button className="button button--secondary"><Plus size={15} />选择图片</button></div>}<div className="composer-modal__footer"><span><Check size={14} />自动保存草稿</span><div><button className="button button--ghost" onClick={() => setComposerOpen(false)}>取消</button><button className="button button--primary" onClick={publish}><Send size={15} />发布内容</button></div></div></div></div>}
+      {composerOpen && <div className="modal-backdrop" role="presentation"><div className="composer-modal" role="dialog" aria-modal="true" aria-labelledby="composer-title"><div className="composer-modal__header"><div><p className="eyebrow">新内容</p><h2 id="composer-title">{composerType === "text" ? "写一条家庭笔记" : "添加一张图片"}</h2></div><button className="icon-button" onClick={() => setComposerOpen(false)} aria-label="关闭"><X size={18} /></button></div><div className="composer-tabs"><button className={composerType === "text" ? "is-active" : ""} onClick={() => setComposerType("text")}><StickyNote size={15} />文字笔记</button><button className={composerType === "image" ? "is-active" : ""} onClick={() => setComposerType("image")}><ImagePlus size={15} />图片</button></div>{composerType === "text" ? <textarea autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="今天想和家人分享什么？" className="note-textarea" /> : <ImageUploader />}<div className="composer-modal__footer"><span><Check size={14} />自动保存草稿</span><div><button className="button button--ghost" onClick={() => setComposerOpen(false)}>取消</button><button className="button button--primary" onClick={publish}><Send size={15} />发布内容</button></div></div></div></div>}
       {toast && <div className="toast"><Check size={16} />{toast}</div>}
     </AdminFrame>
   );

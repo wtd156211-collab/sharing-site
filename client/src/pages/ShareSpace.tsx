@@ -41,11 +41,33 @@ export default function ShareSpace() {
 
   useEffect(() => { void loadSpace(); }, [token]);
 
+  useEffect(() => {
+    if (!token) return;
+    void api.share.listComments(token).then(({ comments: remoteComments }) => {
+      if (!remoteComments.length) return;
+      setComments(remoteComments.map((comment, index) => ({
+        name: String(comment.nickname ?? "家人"),
+        tone: (["green", "blue", "orange", "purple"] as const)[index % 4],
+        text: String(comment.content ?? ""),
+        time: comment.createdAt ? new Date(String(comment.createdAt)).toLocaleString() : "刚刚",
+      })));
+    }).catch(() => { /* keep the local shell while the API is unavailable */ });
+  }, [token]);
+
   if (needsPassword) return <ShareAccess token={token} onUnlocked={() => void loadSpace()} />;
   if (loadError) return <main className="share-page share-page--access"><section className="share-access-card"><p className="eyebrow">分享链接</p><h1>暂时无法访问</h1><p>{loadError}</p><Link href="/admin" className="button button--secondary">返回管理端</Link></section></main>;
-  const addComment = () => {
+  const addComment = async () => {
     if (!commentDraft.trim()) return;
-    setComments((current) => [...current, { name: "我", tone: "orange", text: commentDraft.trim(), time: "刚刚" }]);
+    const content = commentDraft.trim();
+    if (token.length >= 43) {
+      try {
+        await api.share.createComment(token, { nickname: "我", content });
+      } catch {
+        setToast("评论发送失败，请稍后重试"); window.setTimeout(() => setToast(""), 2200);
+        return;
+      }
+    }
+    setComments((current) => [...current, { name: "我", tone: "orange", text: content, time: "刚刚" }]);
     setCommentDraft(""); setToast("评论已发送"); window.setTimeout(() => setToast(""), 2200);
   };
   return (

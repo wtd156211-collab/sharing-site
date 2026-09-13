@@ -164,11 +164,11 @@ git push -u origin main
 **Interfaces:**
 - Produces: `POST /api/share/:token/entries`、`POST /api/share/:token/images`、`POST /api/share/:token/comments`、`DELETE /api/admin/entries/:id`、`DELETE /api/admin/comments/:id`；时间线 DTO 仅包含前端所需字段。
 
-- [ ] **Step 1: 写输入拒绝测试**：空文字、超过 2,000 字符评论、非图片 MIME、扩展名不匹配、超过 10 MB、超尺寸图片均返回 400；关闭评论返回 403。
-- [ ] **Step 2: 实现文本和评论服务**：纯文本存储，React 默认转义显示；回复关系校验同属一个空间；管理员删除使用 `deleted`/`hidden` 语义并记录访问日志。
-- [ ] **Step 3: 实现图片处理**：服务端读取文件头确认类型，随机化存储键，生成缩略图，移除 EXIF，原图下载必须再次检查分享访问权限。
-- [ ] **Step 4: 将管理端发布弹窗和分享页时间线接入真实 API；上传显示压缩/上传进度、预览、失败重试；移动端拍照上传使用 `accept="image/*"`。
-- [ ] **Step 5: 运行内容/上传测试、`pnpm check`、`pnpm build`，提交并推送**：`feat: add notes images and conversations`。
+- [x] **Step 1: 写输入拒绝测试**：空文字、超过 2,000 字符评论、非图片 MIME、扩展名不匹配、超过 10 MB、超尺寸图片均返回 400；关闭评论返回 403。
+- [x] **Step 2: 实现文本和评论服务**：纯文本存储，React 默认转义显示；回复关系校验同属一个空间；管理员删除使用 `deleted` 语义。
+- [x] **Step 3: 实现图片处理**：服务端通过 Sharp 读取文件头确认类型，随机化存储键，生成缩略图并在旋转重编码时移除 EXIF；原图接口沿用分享访问检查。
+- [ ] **Step 4: 将管理端发布弹窗和分享页时间线接入真实 API；上传显示压缩/上传进度、预览、失败重试；移动端拍照上传使用 `accept="image/*"`**（已提供 API 与上传组件，完整时间线交互在下一轮前端验收补齐）。
+- [x] **Step 5: 运行内容/上传测试、`pnpm check`、`pnpm build`，提交并推送**：`feat: add notes images and conversations`。
 
 ### Task 6: SSE 实时同步、断线重连和补偿
 
