@@ -36,8 +36,8 @@ export default function ShareAccess({ token, onUnlocked }: ShareAccessProps) {
         <p>这个空间开启了额外保护，输入密码后即可查看家人分享的内容。</p>
         <form onSubmit={submit}>
           <label htmlFor="share-password">访问密码</label>
-          <input id="share-password" type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" autoFocus />
-          {error && <p className="form-error" role="alert">{error}</p>}
+          <input id="share-password" type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" autoFocus aria-invalid={Boolean(error)} aria-describedby={error ? "share-password-error" : undefined} />
+          {error && <p id="share-password-error" className="form-error" role="alert">{error}</p>}
           <button className="button button--primary button--wide" type="submit" disabled={pending}>{pending ? "验证中…" : "进入分享空间"}</button>
         </form>
       </section>
