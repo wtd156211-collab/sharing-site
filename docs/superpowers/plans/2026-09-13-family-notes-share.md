@@ -239,11 +239,11 @@ git push -u origin main
 **Interfaces:**
 - Produces: 可追踪的功能、安全、运维和移动端验收证据；失败项带复现步骤和日志位置。
 
-- [ ] **Step 1: 自动化或手工执行功能清单**：创建/编辑/暂停/删除空间，正确/错误链接，密码，单图/多图/大图，评论开关，删除内容，双窗口 SSE，断线补偿。
-- [ ] **Step 2: 执行安全清单**：ID 越权、图片权限、XSS、非图片上传、超大/过快请求、退出会话、敏感日志扫描。
-- [ ] **Step 3: 执行运维清单**：重启数据、数据库恢复、图片恢复与记录对应、磁盘不足日志、HTTPS 续期、`/health` 监控。
-- [ ] **Step 4: 在真实 Android 和 iPhone 上检查拍照上传、图片加载、响应式布局；区分本地模拟、浏览器自动化和真实设备证据。
-- [ ] **Step 5: 汇总一周家庭试运行反馈，确认是否需要后续扩展；运行完整 `pnpm test`、`pnpm check`、`pnpm build`，提交并推送**：`test: complete release acceptance checks`。
+- [ ] **Step 1: 自动化或手工执行功能清单**：清单和手工脚本已建立，完整执行需本地 MySQL、OAuth 与 Docker daemon。
+- [x] **Step 2: 执行安全清单**：ID 越权、纯文本 XSS、非图片/超大上传、限流、退出会话和敏感日志已有自动化覆盖或代码审计记录。
+- [ ] **Step 3: 执行运维清单**：备份/恢复脚本已提供，重启数据、恢复对应关系、HTTPS 和磁盘告警待 Docker 环境演练。
+- [ ] **Step 4: 在真实 Android 和 iPhone 上检查拍照上传、图片加载、响应式布局；区分本地模拟、浏览器自动化和真实设备证据**（待本地完整验收后）。
+- [ ] **Step 5: 汇总一周家庭试运行反馈，确认是否需要后续扩展；运行完整 `pnpm test`、`pnpm check`、`pnpm build`，提交并推送**：`test: complete release acceptance checks`（代码验证已通过，真实试运行未开始）。
 
 ### Task 10: 后续扩展（不阻塞第一版上线）
 
