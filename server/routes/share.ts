@@ -25,6 +25,8 @@ import { processImage, ImageValidationError } from "../services/imageProcessor";
 import { validateTextEntryInput } from "../validation/content";
 import { validateCommentInput } from "../services/comments";
 import { randomUUID } from "node:crypto";
+import { insertSpaceEvent } from "../repositories/events";
+import { spaceEventBus, type SpaceEventType } from "../realtime/spaceEvents";
 
 const unlockSchema = z.object({ password: z.string().min(1).max(128) }).strict();
 
@@ -45,6 +47,8 @@ export type ShareRouteDependencies = {
   updateCommentStatus: typeof updateCommentStatus;
   findSpaceByIdAndOwner: typeof findSpaceByIdAndOwner;
   storage: ReturnType<typeof getStorageAdapter>;
+  recordEvent: typeof insertSpaceEvent;
+  publishEvent: typeof spaceEventBus.publish;
 };
 
 const defaultDependencies: ShareRouteDependencies = {
@@ -64,7 +68,14 @@ const defaultDependencies: ShareRouteDependencies = {
   updateCommentStatus,
   findSpaceByIdAndOwner,
   storage: getStorageAdapter(),
+  recordEvent: insertSpaceEvent,
+  publishEvent: spaceEventBus.publish.bind(spaceEventBus),
 };
+
+async function emitEvent(deps: ShareRouteDependencies, spaceId: number, type: SpaceEventType, entityId: number, payload: Record<string, unknown>) {
+  const eventId = await deps.recordEvent({ spaceId, eventType: type, entityId, payloadJson: JSON.stringify(payload) });
+  deps.publishEvent(spaceId, type, payload, eventId);
+}
 
 function sendError(res: Response, error: unknown) {
   if (error instanceof ZodError) {
@@ -184,6 +195,7 @@ export function registerShareRoutes(
       if (admin.id !== space.ownerId) throw new HttpError(403, "Space owner access required");
       const input = validateTextEntryInput(req.body);
       const id = await deps.insertEntry({ spaceId: space.id, authorId: admin.id, entryType: "text", textContent: input.text });
+      await emitEvent(deps, space.id, "entry.created", id, { entryId: id });
       res.status(201).json({ entry: { id, spaceId: space.id, entryType: "text", textContent: input.text } });
     } catch (error) {
       sendError(res, error);
@@ -207,6 +219,7 @@ export function registerShareRoutes(
         if (!comment || comment.spaceId !== space.id) throw new HttpError(400, "Comment does not belong to this space");
       }
       const id = await deps.insertComment({ spaceId: space.id, entryId: input.entryId ?? null, nickname: input.nickname, content: input.content, replyToCommentId: input.replyToCommentId ?? null });
+      await emitEvent(deps, space.id, input.replyToCommentId ? "comment.replied" : "comment.created", id, { commentId: id, entryId: input.entryId ?? null });
       res.status(201).json({ comment: { id, spaceId: space.id, entryId: input.entryId ?? null, nickname: input.nickname, content: input.content, replyToCommentId: input.replyToCommentId ?? null } });
     } catch (error) {
       sendError(res, error);
@@ -246,6 +259,7 @@ export function registerShareRoutes(
       const thumbnail = await deps.storage.put(`${keyBase}_thumb${extension}`, image.thumbnail, image.mimeType);
       const entryId = await deps.insertEntry({ spaceId: space.id, authorId: admin.id, entryType: "image", textContent: null });
       await deps.insertAttachment({ entryId, storageKey: original.key, thumbnailKey: thumbnail.key, originalName: image.originalName, mimeType: image.mimeType, fileSize: image.buffer.length, width: image.width, height: image.height });
+      await emitEvent(deps, space.id, "entry.created", entryId, { entryId, entryType: "image" });
       res.status(201).json({ entry: { id: entryId, spaceId: space.id, entryType: "image", attachment: { url: original.url, thumbnailUrl: thumbnail.url, width: image.width, height: image.height } } });
     } catch (error) {
       sendError(res, error);
@@ -262,6 +276,7 @@ export function registerShareRoutes(
       const space = await deps.findSpaceByIdAndOwner(entry.spaceId, admin.id);
       if (!space) throw new HttpError(404, "Entry not found");
       await deps.updateEntryVisibility(id, entry.spaceId, "deleted");
+      await emitEvent(deps, entry.spaceId, "entry.deleted", id, { entryId: id });
       res.json({ ok: true });
     } catch (error) {
       sendError(res, error);
@@ -278,6 +293,7 @@ export function registerShareRoutes(
       const space = await deps.findSpaceByIdAndOwner(comment.spaceId, admin.id);
       if (!space) throw new HttpError(404, "Comment not found");
       await deps.updateCommentStatus(id, comment.spaceId, "deleted");
+      await emitEvent(deps, comment.spaceId, "space.updated", id, { commentId: id, status: "deleted" });
       res.json({ ok: true });
     } catch (error) {
       sendError(res, error);

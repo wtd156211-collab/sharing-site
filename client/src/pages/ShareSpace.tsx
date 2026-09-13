@@ -5,6 +5,7 @@ import { ArrowUpRight, BookOpen, Check, LockKeyhole, MessageCircle, MoreHorizont
 import { LivePill, SmallAvatar } from "@/components/NotesShell";
 import { ApiError, api, type ShareSpace as ShareSpaceMeta } from "@/lib/api";
 import ShareAccess from "./ShareAccess";
+import { useSpaceEvents } from "@/hooks/useSpaceEvents";
 
 type Comment = { name: string; tone: "green" | "blue" | "orange" | "purple"; text: string; time: string };
 const initialComments: Comment[] = [
@@ -15,6 +16,7 @@ const initialComments: Comment[] = [
 export default function ShareSpace() {
   const [, params] = useRoute<{ token: string }>("/share/:token");
   const token = params?.token ?? "";
+  const realtime = useSpaceEvents(token.length >= 43 ? token : undefined);
   const [space, setSpace] = useState<ShareSpaceMeta | null>(null);
   const [needsPassword, setNeedsPassword] = useState(false);
   const [loadError, setLoadError] = useState("");
@@ -72,10 +74,10 @@ export default function ShareSpace() {
   };
   return (
     <div className="share-page">
-      <header className="share-header"><div className="share-header__inner"><Link href="/admin" className="share-brand"><span className="share-brand__symbol"><BookOpen size={17} /></span><span>拾光笔记</span></Link><div className="share-header__meta"><LivePill text="实时更新" /><button className="share-header__button"><Share2 size={16} />分享</button><button className="share-header__more"><MoreHorizontal size={19} /></button></div></div></header>
+      <header className="share-header"><div className="share-header__inner"><Link href="/admin" className="share-brand"><span className="share-brand__symbol"><BookOpen size={17} /></span><span>拾光笔记</span></Link><div className="share-header__meta"><LivePill text={realtime.status === "open" ? "实时更新" : "重新连接中"} /><button className="share-header__button"><Share2 size={16} />分享</button><button className="share-header__more"><MoreHorizontal size={19} /></button></div></div></header>
       <main className="share-main">
         <div className="share-intro"><div className="share-intro__eyebrow"><span className="share-intro__line" />家庭分享空间 <span className="share-intro__line" /></div><h1>{space?.name ?? "家庭的"}<br /><em>日常记录</em></h1><p>{space?.description ?? "这里放着一些想和家人分享的片段。"}<br />谢谢你来看。</p><div className="share-intro__bottom"><span>{space?.lastActivityAt ? `更新于 ${new Date(space.lastActivityAt).toLocaleString()}` : "等待第一次更新"}</span><span className="share-intro__lock"><LockKeyhole size={13} />仅限持链接的家人查看</span></div></div>
-        {showNew && <div className="new-update-banner" onClick={() => setShowNew(false)}><span className="new-update-banner__pulse" /><span>刚刚有 1 条新内容</span><button>查看更新 <ArrowUpRight size={14} /></button><button className="new-update-banner__close" aria-label="关闭"><X size={15} /></button></div>}
+        {showNew && <div className="new-update-banner" onClick={() => setShowNew(false)}><span className="new-update-banner__pulse" /><span>刚刚有 {Math.max(1, realtime.unreadCount)} 条新内容</span><button>查看更新 <ArrowUpRight size={14} /></button><button className="new-update-banner__close" aria-label="关闭"><X size={15} /></button></div>}
         <div className="share-timeline"><div className="timeline-date"><span>今天 · 9 月 13 日</span><i /></div><article className="share-entry share-entry--featured"><div className="share-entry__rail"><SmallAvatar name="妹" tone="orange" /><span className="timeline-line" /></div><div className="share-entry__content"><div className="entry-meta"><strong>妹妹</strong><span>10:18</span><span className="entry-tag">文字笔记</span></div><h2>今天把数学错题重新整理了一遍</h2><p>发现先画图再列式会清楚很多。晚上想再把第三题讲给妈妈听。</p><div className="entry-note-paper"><div className="entry-note-paper__top"><span>今天的一个小发现</span><span>№ 018</span></div><div className="entry-note-paper__equation">先画图<br /><b>↓</b><br />再列式</div><div className="entry-note-paper__scribble">慢慢来，<br />会更清楚。</div></div><div className="entry-actions"><button><MessageCircle size={15} />{comments.length} 条对话</button><button><Smile size={15} />送一个鼓励</button></div><div className="comments-thread">{comments.map((comment) => <div className="comment-row" key={comment.name + comment.time}><SmallAvatar name={comment.name} tone={comment.tone} /><div><p><strong>{comment.name}</strong>{comment.text}</p><span>{comment.time}</span></div></div>)}</div><div className="comment-composer"><SmallAvatar name="我" tone="orange" /><input value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addComment()} placeholder="写一句回复..." /><button onClick={addComment} aria-label="发送评论"><Send size={16} /></button></div></div></article><article className="share-entry"><div className="share-entry__rail"><SmallAvatar name="妹" tone="orange" /><span className="timeline-line" /></div><div className="share-entry__content"><div className="entry-meta"><strong>妹妹</strong><span>09:42</span><span className="entry-tag entry-tag--peach">图片笔记</span></div><h2>周末的风很轻</h2><p>在窗边晒到了一点太阳。</p><div className="share-image-placeholder"><span>WEEKEND<br /><b>09.13</b></span><div className="share-image-placeholder__sun" /></div><div className="entry-actions"><button><MessageCircle size={15} />1 条对话</button><button><Smile size={15} />送一个鼓励</button></div></div></article></div>
         <div className="share-footer-note"><span className="share-footer-note__icon"><Wifi size={15} /></span><p>这个页面会自动更新<br /><strong>不用反复刷新</strong></p></div>
       </main>

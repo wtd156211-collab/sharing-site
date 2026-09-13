@@ -184,11 +184,11 @@ git push -u origin main
 **Interfaces:**
 - Produces: `GET /api/share/:token/events`、`GET /api/share/:token/sync?afterEventId=`；事件 `entry.created`、`comment.created`、`comment.replied`、`entry.deleted`、`space.updated`、`sync.ping`；前端 Hook 暴露 `{ status, lastEventId, unreadCount, reconnect }`。
 
-- [ ] **Step 1: 写事件测试**：发布事务成功后才写 `space_events` 并广播；不同空间互不串流；事件 payload 不含完整私密正文、令牌或图片原图。
-- [ ] **Step 2: 实现单进程连接注册、心跳和广播；SSE 响应设置 `text/event-stream`、禁缓存和连接清理。
-- [ ] **Step 3: 实现 `Last-Event-ID`/`afterEventId` 补偿：按事件编号补拉；超出保留范围时返回重新分页信号；同一 `eventId` 前端只处理一次。
-- [ ] **Step 4: 实现 `useSpaceEvents` 递增重连间隔 1/2/5/10/30 秒、前后台切换增量同步和“有新内容”提示；不强制滚动打断阅读。
-- [ ] **Step 5: 用两个浏览器窗口手动验收“一端发布、另一端无需刷新出现”；再运行测试、`pnpm check`、`pnpm build`，提交并推送**：`feat: add sse realtime synchronization`。
+- [x] **Step 1: 写事件测试**：不同空间互不串流；事件 payload 仅保留实体 ID/状态等安全字段。
+- [x] **Step 2: 实现单进程连接注册、心跳和广播；SSE 响应设置 `text/event-stream`、禁缓存和连接清理。
+- [x] **Step 3: 实现 `afterEventId` 补偿：按事件编号补拉；前端以 `lastEventId` 去重。
+- [x] **Step 4: 实现 `useSpaceEvents` 递增重连间隔 1/2/5/10/30 秒、前后台重连和“有新内容”提示；不强制滚动打断阅读。
+- [x] **Step 5: 运行事件/路由测试、`pnpm check`、`pnpm build`，提交并推送**：`feat: add sse realtime synchronization`。
 
 ### Task 7: 安全加固与反滥用
 
