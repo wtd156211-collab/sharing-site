@@ -29,11 +29,11 @@
 
 ## Folder-note 交互本地验收
 
-- [x] 原版 Folder-blue SVG 与 motion interaction 本地验证
-- [x] 文件夹内真实笔记数量本地验证
-- [x] 点击笔记打开详情对话框本地验证
-- [x] 键盘 `Escape` 关闭详情本地验证
-- [x] 响应式文件夹布局本地验证
+- [x] Folder 键盘触发、卡片回调、空态焦点目标与 reduced-motion 的 Vitest + jsdom 可执行验证
+- [x] 文件夹内真实笔记数量与第四条溢出笔记交互代码验证
+- [x] 点击笔记打开详情对话框、Escape 与 backdrop 关闭的代码验证
+- [ ] 原版 Folder-blue SVG 与 motion interaction 的真实浏览器验证
+- [ ] 响应式文件夹布局的真实浏览器验证
 - [ ] MySQL/OAuth、Docker daemon/container、完整浏览器 E2E、真机验收和生产部署
 
 ## 安全与运维验收

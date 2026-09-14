@@ -126,6 +126,23 @@ export default function AdminDashboard() {
                     cards={grouped[type].slice(0, 3).map((note) => ({ id: note.id, title: note.title, onClick: () => openNote(note) }))}
                     onCardClick={(card) => { const note = grouped[type].find((item) => item.id === card.id); if (note) openNote(note); }}
                  />
+                 {grouped[type].length === 0 ? (
+                   <p className="folder-note-list__empty">还没有{label}</p>
+                 ) : grouped[type].length > 3 ? (
+                   <div className="folder-note-list" aria-label={`${label}更多笔记`}>
+                     {grouped[type].slice(3).map((note) => (
+                       <button
+                         type="button"
+                         className="folder-note-item"
+                         key={note.id}
+                         onClick={() => openNote(note)}
+                       >
+                         <span>{note.title}</span>
+                         <span className="note-folder__count">{note.time}</span>
+                       </button>
+                     ))}
+                   </div>
+                 ) : null}
                </div>
              ))}
            </div>

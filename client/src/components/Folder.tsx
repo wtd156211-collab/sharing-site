@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "motion/react";
+import React, { useId, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const themes = {
@@ -83,6 +83,9 @@ const FolderComponent = ({
   const scale = sizeScales[size];
   const [isHovered, setIsHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const instanceId = useId().replace(/:/g, "");
+  const toggleOpen = () => setIsOpen((open) => !open);
 
   return (
     <div
@@ -95,6 +98,10 @@ const FolderComponent = ({
     >
       <div
         className="relative cursor-pointer select-none"
+        role="button"
+        tabIndex={0}
+        aria-label={`${color === "blue" ? "蓝色" : color === "white" ? "白色" : "黑色"}文件夹，${cards?.length ?? 0} 张笔记卡片`}
+        aria-expanded={isOpen}
         style={{
           width: BASE_WIDTH * scale,
           height: BASE_HEIGHT * scale,
@@ -106,7 +113,13 @@ const FolderComponent = ({
           setIsHovered(false);
           setIsOpen(false);
         }}
-        onClick={() => setIsOpen((o) => !o)}
+        onClick={toggleOpen}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleOpen();
+          }
+        }}
       >
         <div
           className="absolute top-1/2 left-1/2"
@@ -137,14 +150,14 @@ const FolderComponent = ({
                 x: isOpen ? 70 : 40,
                 rotate: isOpen ? 18 : isHovered ? 14 : 10,
               }}
-              transition={{
+              transition={shouldReduceMotion ? { duration: 0 } : {
                 type: "spring",
                 stiffness: 120,
                 damping: 13,
                 delay: isOpen ? 0.1 : isHovered ? 0.12 : 0,
               }}
             >
-              <CardButton card={cards?.[0]} index={1} theme={theme} onCardClick={onCardClick} />
+              <CardButton card={cards?.[0]} index={1} instanceId={instanceId} theme={theme} onCardClick={onCardClick} />
             </motion.div>
             <motion.div
               className="absolute"
@@ -153,14 +166,14 @@ const FolderComponent = ({
                 x: isOpen ? 0 : 3,
                 rotate: isOpen ? -3 : isHovered ? -1 : 2,
               }}
-              transition={{
+              transition={shouldReduceMotion ? { duration: 0 } : {
                 type: "spring",
                 stiffness: 120,
                 damping: 13,
                 delay: isOpen ? 0.05 : isHovered ? 0.06 : 0,
               }}
             >
-              <CardButton card={cards?.[1]} index={2} theme={theme} onCardClick={onCardClick} />
+              <CardButton card={cards?.[1]} index={2} instanceId={instanceId} theme={theme} onCardClick={onCardClick} />
             </motion.div>
             <motion.div
               className="absolute"
@@ -169,14 +182,14 @@ const FolderComponent = ({
                 x: isOpen ? -65 : -40,
                 rotate: isOpen ? -14 : isHovered ? -9 : -5,
               }}
-              transition={{
+              transition={shouldReduceMotion ? { duration: 0 } : {
                 type: "spring",
                 stiffness: 120,
                 damping: 13,
                 delay: isOpen ? 0 : 0,
               }}
             >
-              <CardButton card={cards?.[2]} index={3} theme={theme} onCardClick={onCardClick} />
+              <CardButton card={cards?.[2]} index={3} instanceId={instanceId} theme={theme} onCardClick={onCardClick} />
             </motion.div>
           </div>
 
@@ -189,7 +202,7 @@ const FolderComponent = ({
               height: 241,
             }}
             animate={{ rotateX: isOpen ? -55 : isHovered ? -45 : -15 }}
-            transition={{ type: "spring", stiffness: 120, damping: 14 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 14 }}
           >
             <div
               className="absolute inset-0"
@@ -212,7 +225,7 @@ const FolderComponent = ({
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g filter="url(#filter0_i_171_13)">
+              <g filter={`url(#${instanceId}-flap-filter)`}>
                 <path
                   d={FLAP_PATH}
                   fill={theme.flapFill}
@@ -225,7 +238,7 @@ const FolderComponent = ({
               </g>
               <defs>
                 <filter
-                  id="filter0_i_171_13"
+                  id={`${instanceId}-flap-filter`}
                   x="-25.4"
                   y="-25.4"
                   width="371.8"
@@ -277,8 +290,8 @@ export type { FolderCard, FolderComponentProps };
 
 type Theme = (typeof themes)[keyof typeof themes];
 
-const Card = ({ id, theme }: { id: number; theme: Theme }) => {
-  const filterId = `filter0_i_card_${id}`;
+const Card = ({ id, instanceId, theme }: { id: number; instanceId: string; theme: Theme }) => {
+  const filterId = `${instanceId}-card-filter-${id}`;
   return (
     <div data-slot="folder-card">
       <svg
@@ -486,29 +499,32 @@ const Card = ({ id, theme }: { id: number; theme: Theme }) => {
 const CardButton = ({
   card,
   index,
+  instanceId,
   theme,
   onCardClick,
 }: {
   card?: FolderCard;
   index: number;
+  instanceId: string;
   theme: Theme;
   onCardClick?: (card: FolderCard) => void;
 }) => {
   if (!card) {
-    return <Card id={index} theme={theme} />;
+    return <Card id={index} instanceId={instanceId} theme={theme} />;
   }
 
   return (
     <button
       type="button"
       aria-label={card.title}
-      onClick={() => {
+      onClick={(event) => {
+        event.stopPropagation();
         card.onClick?.();
         onCardClick?.(card);
       }}
       className="appearance-none border-0 bg-transparent p-0"
     >
-      <Card id={index} theme={theme} />
+      <Card id={index} instanceId={instanceId} theme={theme} />
     </button>
   );
 };
