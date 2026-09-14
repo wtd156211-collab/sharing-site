@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import {
   ArrowUpRight,
@@ -35,12 +35,24 @@ const groupNotesByType = (notes: Note[]): Record<NoteType, Note[]> => ({
 
 export default function AdminDashboard() {
   const [notes, setNotes] = useState(initialNotes);
-  const [, setSelectedNote] = useState<Note | null>(null);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
   const [composerType, setComposerType] = useState<"text" | "image">("text");
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState("");
+
+  const openNote = (note: Note) => setSelectedNote(note);
+  const closeNote = () => setSelectedNote(null);
+
+  useEffect(() => {
+    if (!selectedNote) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeNote();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedNote]);
 
   const flash = (message: string) => {
     setToast(message);
@@ -111,8 +123,8 @@ export default function AdminDashboard() {
                  <Folder
                    color="blue"
                    size="sm"
-                   cards={grouped[type].slice(0, 3).map((note) => ({ id: note.id, title: note.title, onClick: () => setSelectedNote(note) }))}
-                   onCardClick={(card) => { const note = grouped[type].find((item) => item.id === card.id); if (note) setSelectedNote(note); }}
+                    cards={grouped[type].slice(0, 3).map((note) => ({ id: note.id, title: note.title, onClick: () => openNote(note) }))}
+                    onCardClick={(card) => { const note = grouped[type].find((item) => item.id === card.id); if (note) openNote(note); }}
                  />
                </div>
              ))}
@@ -133,6 +145,7 @@ export default function AdminDashboard() {
       </section>
 
       {composerOpen && <div className="modal-backdrop" role="presentation"><div className="composer-modal" role="dialog" aria-modal="true" aria-labelledby="composer-title"><div className="composer-modal__header"><div><p className="eyebrow">新内容</p><h2 id="composer-title">{composerType === "text" ? "写一条家庭笔记" : "添加一张图片"}</h2></div><button className="icon-button" onClick={() => setComposerOpen(false)} aria-label="关闭"><X size={18} /></button></div><div className="composer-tabs"><button className={composerType === "text" ? "is-active" : ""} onClick={() => setComposerType("text")}><StickyNote size={15} />文字笔记</button><button className={composerType === "image" ? "is-active" : ""} onClick={() => setComposerType("image")}><ImagePlus size={15} />图片</button></div>{composerType === "text" ? <textarea autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="今天想和家人分享什么？" className="note-textarea" /> : <ImageUploader />}<div className="composer-modal__footer"><span><Check size={14} />自动保存草稿</span><div><button className="button button--ghost" onClick={() => setComposerOpen(false)}>取消</button><button className="button button--primary" onClick={publish}><Send size={15} />发布内容</button></div></div></div></div>}
+      {selectedNote && <div className="modal-backdrop" role="presentation" onClick={(event) => { if (event.target === event.currentTarget) closeNote(); }}><article className="note-detail-modal" role="dialog" aria-modal="true" aria-labelledby="note-detail-title"><header className="composer-modal__header"><div><p className="eyebrow">{selectedNote.type === "text" ? "文字笔记" : "图片笔记"}</p><h2 id="note-detail-title">{selectedNote.title}</h2></div><button className="icon-button" onClick={closeNote} aria-label="关闭笔记详情"><X size={18} /></button></header><div className="note-detail-modal__meta"><span>{selectedNote.time}</span><span>{selectedNote.comments} 条评论</span></div><p className="note-detail-modal__body">{selectedNote.body || "暂无正文"}</p></article></div>}
        {toast && <div className="toast" role="status" aria-live="polite"><Check size={16} />{toast}</div>}
     </AdminFrame>
   );

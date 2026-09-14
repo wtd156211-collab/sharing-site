@@ -24,4 +24,12 @@ describe("original folder component contract", () => {
     expect(dashboard).toContain("notes.length");
     expect(dashboard).toContain("groupNotesByType");
   });
+
+  it("opens a semantic note detail dialog", () => {
+    const dashboard = readFileSync(path.resolve(import.meta.dirname, "../../client/src/pages/AdminDashboard.tsx"), "utf8");
+    expect(dashboard).toContain('role="dialog"');
+    expect(dashboard).toContain('aria-modal="true"');
+    expect(dashboard).toContain("note-detail-title");
+    expect(dashboard).toContain("Escape");
+  });
 });
