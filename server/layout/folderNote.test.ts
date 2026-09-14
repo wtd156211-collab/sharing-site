@@ -13,4 +13,15 @@ describe("original folder component contract", () => {
     expect(source).toContain('from "motion/react"');
     expect(source).toContain("rotateX");
   });
+
+  it("derives folder labels and counts from note types", () => {
+    const dashboard = readFileSync(
+      path.resolve(import.meta.dirname, "../../client/src/pages/AdminDashboard.tsx"),
+      "utf8",
+    );
+    expect(dashboard).toContain("文字笔记");
+    expect(dashboard).toContain("图片笔记");
+    expect(dashboard).toContain("notes.length");
+    expect(dashboard).toContain("groupNotesByType");
+  });
 });

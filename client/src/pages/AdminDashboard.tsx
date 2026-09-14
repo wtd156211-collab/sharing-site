@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "wouter";
 import {
   ArrowUpRight,
-  Camera,
   Check,
   ChevronRight,
   Clock3,
@@ -10,7 +9,6 @@ import {
   FilePlus2,
   ImagePlus,
   Link2,
-  MessageCircle,
   MoreHorizontal,
   Send,
   Share2,
@@ -20,14 +18,24 @@ import {
 } from "lucide-react";
 import { AdminFrame, activityItems, LivePill, samplePhotos, SectionTitle, SmallAvatar } from "@/components/NotesShell";
 import ImageUploader from "@/components/ImageUploader";
+import { Folder } from "@/components/Folder";
 
-const initialNotes = [
+type NoteType = "text" | "image";
+type Note = { id: number; type: NoteType; title: string; body: string; time: string; comments: number };
+
+const initialNotes: Note[] = [
   { id: 1, type: "text", title: "今天把数学错题重新整理了一遍", body: "发现先画图再列式会清楚很多。晚上想再把第三题讲给妈妈听。", time: "今天 10:18", comments: 3 },
   { id: 2, type: "image", title: "周末的风很轻", body: "在窗边晒到了一点太阳。", time: "今天 09:42", comments: 1 },
 ];
 
+const groupNotesByType = (notes: Note[]): Record<NoteType, Note[]> => ({
+  text: notes.filter((note) => note.type === "text"),
+  image: notes.filter((note) => note.type === "image"),
+});
+
 export default function AdminDashboard() {
   const [notes, setNotes] = useState(initialNotes);
+  const [, setSelectedNote] = useState<Note | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
   const [composerType, setComposerType] = useState<"text" | "image">("text");
   const [draft, setDraft] = useState("");
@@ -53,6 +61,12 @@ export default function AdminDashboard() {
     flash("分享链接已复制");
     window.setTimeout(() => setCopied(false), 1800);
   };
+
+  const noteGroups = [
+    { type: "text" as const, label: "文字笔记" },
+    { type: "image" as const, label: "图片笔记" },
+  ];
+  const grouped = groupNotesByType(notes);
 
   return (
     <AdminFrame eyebrow="星期日，9 月 13 日" title="早上好，小满" action={<Link href="/share/demo" className="button button--secondary"><Share2 size={16} />查看分享页<ArrowUpRight size={15} /></Link>}>
@@ -90,9 +104,19 @@ export default function AdminDashboard() {
       <section className="dashboard-grid dashboard-grid--main">
         <article className="panel notes-panel">
           <div className="panel__header"><SectionTitle icon={StickyNote} label="最近笔记" meta={`${notes.length} 条刚刚更新`} /><button className="icon-button"><MoreHorizontal size={18} /></button></div>
-           <div className="notes-list">
-             {notes.length === 0 ? <div className="dashboard-empty"><StickyNote size={22} /><strong>还没有家庭笔记</strong><span>写下第一条内容，家人就能在这里看到。</span><button className="button button--secondary" onClick={() => { setComposerType("text"); setComposerOpen(true); }}>新建笔记</button></div> : notes.map((note) => <div className="note-row" key={note.id}><div className={`note-row__marker ${note.type === "image" ? "note-row__marker--image" : ""}`}>{note.type === "image" ? <Camera size={16} /> : <StickyNote size={16} />}</div><div className="note-row__copy"><div className="note-row__meta"><span>{note.time}</span><span className="dot-separator" /> <span>{note.type === "image" ? "图片笔记" : "文字笔记"}</span></div><h3>{note.title}</h3><p>{note.body}</p><div className="note-row__bottom"><span><MessageCircle size={14} /> {note.comments} 条对话</span><button className="text-link">打开笔记 <ArrowUpRight size={13} /></button></div></div></div>)}
-          </div>
+           <div className="note-folders">
+             {noteGroups.map(({ type, label }) => (
+               <div className="note-folder" key={type}>
+                 <div className="note-folder__header"><strong>{label}</strong><span>{grouped[type].length} 条</span></div>
+                 <Folder
+                   color={type === "text" ? "blue" : "white"}
+                   size="sm"
+                   cards={grouped[type].slice(0, 3).map((note) => ({ id: note.id, title: note.title, onClick: () => setSelectedNote(note) }))}
+                   onCardClick={(card) => { const note = grouped[type].find((item) => item.id === card.id); if (note) setSelectedNote(note); }}
+                 />
+               </div>
+             ))}
+           </div>
           <Link href="/share/demo" className="panel__footer-link">查看全部笔记 <ArrowUpRight size={14} /></Link>
         </article>
 
