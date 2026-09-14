@@ -109,7 +109,7 @@ export default function AdminDashboard() {
                <div className="note-folder" key={type}>
                  <div className="note-folder__header"><strong>{label}</strong><span>{grouped[type].length} 条</span></div>
                  <Folder
-                   color={type === "text" ? "blue" : "white"}
+                   color="blue"
                    size="sm"
                    cards={grouped[type].slice(0, 3).map((note) => ({ id: note.id, title: note.title, onClick: () => setSelectedNote(note) }))}
                    onCardClick={(card) => { const note = grouped[type].find((item) => item.id === card.id); if (note) setSelectedNote(note); }}
