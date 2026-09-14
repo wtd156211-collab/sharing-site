@@ -540,6 +540,24 @@ h1 { margin-bottom: 0; color: var(--ink-1); font-size: clamp(28px, 3vw, 38px); l
 .ai-chatbox__composer button[type="submit"] { width: 44px; height: 44px; color: var(--on-primary); background: var(--primary); }
 .ai-chatbox__composer button[type="submit"]:disabled { opacity: .5; }
 
+/* Material folder and note surfaces (keeps the original 321x270 animation visible). */
+.note-folders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0 24px; }
+.note-folder, .note-folder-card { min-width: 0; min-height: 321px; overflow: visible; padding: 14px 12px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.note-folder__header, .note-folder-card__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; color: var(--ink-1); }
+.note-folder__header strong, .note-folder-card__header strong { font-size: 13px; font-weight: 600; }
+.note-folder__header span, .note-folder-card__header span, .note-folder__count { color: var(--ink-3); font: 11px "Roboto Mono", monospace; }
+.note-folder > [data-slot="folder"], .note-folder-card > [data-slot="folder"] { min-height: 270px; overflow: visible; }
+.folder-note-list { display: grid; gap: 8px; margin-top: 16px; }
+.folder-note-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-control); }
+.folder-note-item:hover { color: var(--primary); background: var(--primary-soft); border-color: var(--primary); }
+.folder-note-item:focus-visible, .note-folder:focus-visible, .note-folder-card:focus-visible, .note-detail-modal :is(button, a):focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.folder-note-item button { min-width: 44px; min-height: 44px; }
+.note-detail-modal { width: min(510px, 100%); max-height: min(680px, calc(100dvh - 40px)); overflow: auto; padding: 25px; color: var(--ink-1); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-floating); animation: modal-in .22s var(--ease-out); }
+.note-detail-modal__meta { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 16px; color: var(--ink-3); font: 11px "Roboto Mono", monospace; }
+.note-detail-modal__body { margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.note-detail-modal .icon-button { color: var(--ink-2); }
+.note-detail-modal .icon-button:hover { color: var(--primary); background: var(--primary-soft); }
+
 /* Responsive Material 3 floor */
 @media (max-width: 760px) {
   .overview-strip { display: block; padding: 20px; }
@@ -553,6 +571,9 @@ h1 { margin-bottom: 0; color: var(--ink-1); font-size: clamp(28px, 3vw, 38px); l
   .button, .side-nav__item, .toggle-button, .share-header__button, .share-header__more { min-height: 44px; }
   .share-header__more { min-width: 44px; }
   .new-update-banner button { min-height: 44px; }
+  .note-folders { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 16px; }
+  .note-folder, .note-folder-card { min-height: 321px; padding-inline: 10px; }
+  .note-detail-modal { width: 100%; max-height: calc(100dvh - 32px); padding: 20px; }
 }
 
 .app-topbar h1, .overview-strip h2, .share-entry h2 { min-width: 0; overflow-wrap: anywhere; }

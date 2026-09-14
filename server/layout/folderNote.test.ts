@@ -32,4 +32,14 @@ describe("original folder component contract", () => {
     expect(dashboard).toContain("note-detail-title");
     expect(dashboard).toContain("Escape");
   });
+
+  it("provides a responsive folder surface without replacing the original animation", () => {
+    const css = readFileSync(
+      path.resolve(import.meta.dirname, "../../client/src/index.css"),
+      "utf8",
+    );
+    expect(css).toContain(".note-folders");
+    expect(css).toContain(".note-detail-modal");
+    expect(css).toMatch(/@media\s*\(max-width:\s*760px\)[\s\S]*\.note-folders/);
+  });
 });
