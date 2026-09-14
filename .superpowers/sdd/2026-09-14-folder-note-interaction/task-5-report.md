@@ -20,3 +20,6 @@ PASS（本地自动化验收全绿；Folder-note 交互验收记录已更新）�
 
 MySQL/OAuth、Docker daemon/container、完整浏览器 E2E、Android/iPhone 真机验收、生产部署仍未完成，清单中保持未勾选。
 
+## 修正说明
+
+该报告属于 `.superpowers` 下的本地 ignored 内部执行记录，不属于产品交付文件；已从 Git 追踪中移除，仅保留本地副本。
