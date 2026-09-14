@@ -27,6 +27,15 @@
 - [ ] 评论开关、纯文本 XSS、回复跨空间校验、管理员删除
 - [ ] 两个浏览器窗口验证 SSE 新内容提示、断线重连和 `afterEventId` 补偿
 
+## Folder-note 交互本地验收
+
+- [x] 原版 Folder-blue SVG 与 motion interaction 本地验证
+- [x] 文件夹内真实笔记数量本地验证
+- [x] 点击笔记打开详情对话框本地验证
+- [x] 键盘 `Escape` 关闭详情本地验证
+- [x] 响应式文件夹布局本地验证
+- [ ] MySQL/OAuth、Docker daemon/container、完整浏览器 E2E、真机验收和生产部署
+
 ## 安全与运维验收
 
 - [ ] 修改 space/entry/comment ID 不能越权
