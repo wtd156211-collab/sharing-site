@@ -493,18 +493,22 @@ const CardButton = ({
   index: number;
   theme: Theme;
   onCardClick?: (card: FolderCard) => void;
-}) => (
-  <button
-    type="button"
-    aria-label={card?.title}
-    onClick={() => {
-      if (card) {
+}) => {
+  if (!card) {
+    return <Card id={index} theme={theme} />;
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={card.title}
+      onClick={() => {
         card.onClick?.();
         onCardClick?.(card);
-      }
-    }}
-    className="appearance-none border-0 bg-transparent p-0"
-  >
-    <Card id={index} theme={theme} />
-  </button>
-);
+      }}
+      className="appearance-none border-0 bg-transparent p-0"
+    >
+      <Card id={index} theme={theme} />
+    </button>
+  );
+};
